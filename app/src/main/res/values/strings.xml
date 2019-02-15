@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">TextTraQ</string>
+    <string name="start_journey">Start Journey</string>
+    <string name="enter_destination">Enter Destination</string>
+    <string name="favorites">Favorites</string>
+    <string name="contacts">Contacts</string>
+    <string name="settings">Settings</string>
 </resources>
