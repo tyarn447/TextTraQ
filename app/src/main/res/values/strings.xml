@@ -8,4 +8,10 @@
     <string name="enter_your_username">Enter Your Username</string>
     <string name="enter_your_password">Enter Your Password</string>
     <string name="log_in">Log In</string>
+    <string name="password_hint">Enter Password</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="texttraq">TextTraQ</string>
+    <string name="contact_1_name">Contact 1 Name</string>
+    <string name="contact_2_name">Contact 2 Name</string>
+
 </resources>
