@@ -11,30 +11,46 @@
         android:id="@+id/passwordBox"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="308dp"
+        android:layout_marginTop="32dp"
         android:autofillHints="@string/password_hint"
         android:background="@android:color/background_light"
         android:ems="10"
         android:hint="@string/enter_your_password"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enterEmail" tools:targetApi="o"/>
+        app:layout_constraintTop_toBottomOf="@+id/enterEmail"
+        tools:targetApi="o" />
+
+    <EditText
+        android:id="@+id/confirmPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginTop="32dp"
+        android:autofillHints="@string/password_hint"
+        android:background="@android:color/background_light"
+        android:ems="10"
+        android:hint="@string/confirm_your_password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordBox"
+        tools:targetApi="o" />
 
     <Button
-        android:id="@+id/logInButton"
+        android:id="@+id/createAcct"
         android:layout_width="298dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="128dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="8dp"
         android:background="@color/design_default_color_primary"
-        android:text="@string/log_in"
+        android:text="@string/create_account"
         android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordBox" />
+        app:layout_constraintTop_toBottomOf="@+id/confirmPassword" />
 
     <TextView
         android:id="@+id/AppName"
@@ -42,7 +58,7 @@
         android:layout_height="98dp"
         android:layout_marginTop="64dp"
         android:gravity="center"
-        android:text="@string/texttraq"
+        android:text="@string/create_account"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
         android:textSize="32sp"
@@ -56,33 +72,15 @@
         android:id="@+id/enterEmail"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginTop="124dp"
         android:autofillHints=""
         android:background="@android:color/white"
         android:ems="10"
         android:hint="@string/enter_email"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/passwordBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/AppName"
         tools:targetApi="o" />
 
-    <Button
-        android:id="@+id/newAcct"
-        android:layout_width="239dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/design_default_color_primary"
-        android:onClick="launchCreateAccount"
-        android:text="@string/create_new_account"
-        android:textColor="@android:color/holo_red_dark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logInButton" />
 </android.support.constraint.ConstraintLayout>
