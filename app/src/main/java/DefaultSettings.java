@@ -10,7 +10,7 @@ public class DefaultSettings {
 @PrimaryKey
     public int DefaultID;
 @ColumnInfo
-    public Time DefaultTime;
+    public int DefaultTime;
 @ColumnInfo
     public Boolean DefaultLocation;
 @ColumnInfo
