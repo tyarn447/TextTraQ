@@ -73,6 +73,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:text="@string/contacts"
+        android:onClick="goToContacts"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -30,7 +30,8 @@
         android:layout_marginLeft="8dp"
         android:text="@string/contacts"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <Button
         android:id="@+id/navButton"
