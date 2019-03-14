@@ -1,15 +1,16 @@
 package com.example.texttraq;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+
 import androidx.room.Room;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,12 +41,16 @@ public class MainActivity extends AppCompatActivity {
             editor.commit();
             //Now put default values in
 
-            //fairly sure this is incorrect
+
             AppDataBase db = Room.databaseBuilder(getApplicationContext(), AppDataBase.class, "database-name").build();
-            defaultDB = ((AppDataBase) db).defaultDao();
-            DefaultSettings defaultSettings = new DefaultSettings(1,15,false, false, false,"This is an automated message");
-            DefaultSettingsDao.createDefaultSettings(defaultSettings);
-            //fairly sure this is incorrect, ignore for now
+            DefaultSettingsDao mDao = db.defaultDao();
+            DefaultSettings defaultSettingsObj = new DefaultSettings(1,15,false,false,false,"This is an automated message");
+            mDao.createDefaultSettings(defaultSettingsObj);
+            //This should have created an entry in the database for default settings
+
+            DefaultSettings newDefaultSettings = db.defaultDao().getDefaultSettings();
+
+
         }
     }
 }

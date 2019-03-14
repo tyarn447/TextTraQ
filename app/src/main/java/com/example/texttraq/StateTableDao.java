@@ -1,3 +1,5 @@
+package com.example.texttraq;
+
 import androidx.room.Dao;
 
 @Dao

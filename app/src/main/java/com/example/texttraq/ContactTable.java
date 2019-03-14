@@ -1,3 +1,5 @@
+package com.example.texttraq;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
