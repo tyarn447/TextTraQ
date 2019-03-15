@@ -3,11 +3,11 @@ package com.example.texttraq;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         checkFirstRun();
     }
 
-    Intent intent = new Intent(this, activity_contacts.class);
+    Intent intent = new Intent(this, ContactsActivity.class);
 
     public void goToContacts(View view) {
         startActivity(intent);

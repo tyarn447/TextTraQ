@@ -1,7 +1,9 @@
 package com.example.texttraq;
 
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class ContactSettingsActivity extends AppCompatActivity {
 

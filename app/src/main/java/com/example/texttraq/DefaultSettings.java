@@ -10,15 +10,31 @@ import androidx.room.PrimaryKey;
 public class DefaultSettings {
     //this doesnt need to autoIncrement because there will only be 1
     @PrimaryKey
-    private int DefaultID;
+    public int DefaultID;
     @ColumnInfo
-    private int DefaultTime;
+    public int DefaultTime;
     @ColumnInfo
-    private Boolean DefaultLocation;
+    public Boolean DefaultLocation;
     @ColumnInfo
-    private Boolean DefaultSpeed;
+    public Boolean DefaultSpeed;
     @ColumnInfo
-    private Boolean DefaultETA;
+    public Boolean DefaultETA;
     @ColumnInfo
-    private String DefaultCustomMessage;
+    public String DefaultCustomMessage;
+
+
+    //PRE:none
+    //POST:Base Constructor
+    public DefaultSettings(){}
+
+    //PRE:none
+    //POST:Constructs the object
+    public DefaultSettings(int pDefaultID, int pDefaultTime, Boolean pDefaultLocation, Boolean pDefaultSpeed, Boolean pDefaultETA, String pDefaultCustomMessage){
+        DefaultID = pDefaultID;
+        DefaultTime = pDefaultTime;
+        DefaultLocation = pDefaultLocation;
+        DefaultSpeed = pDefaultSpeed;
+        DefaultETA = pDefaultETA;
+        DefaultCustomMessage = pDefaultCustomMessage;
+    }
 }

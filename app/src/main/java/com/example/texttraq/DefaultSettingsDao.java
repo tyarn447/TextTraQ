@@ -8,8 +8,8 @@ import androidx.room.Query;
 public interface DefaultSettingsDao {
     //Inserts a defaultSettings row into the table.
     @Insert
-    public void createDefaultSettings(DefaultSettings defaultSettings);
+    void createDefaultSettings(DefaultSettings defaultSettings);
 
-    @Query("SELECT * FROM DefaultSettings WHERE DefaultID=1");
-    public DefaultSettings getDefaultSettings();
+    @Query("SELECT * FROM DefaultSettings WHERE DefaultID=1")
+    DefaultSettings getDefaultSettings();
 }
