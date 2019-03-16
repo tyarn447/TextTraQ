@@ -37,4 +37,8 @@ public class DefaultSettings {
         DefaultETA = pDefaultETA;
         DefaultCustomMessage = pDefaultCustomMessage;
     }
+
+    public String getDefaultCustomMessage(){
+        return DefaultCustomMessage;
+    }
 }
