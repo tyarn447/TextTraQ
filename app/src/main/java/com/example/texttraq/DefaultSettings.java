@@ -4,6 +4,7 @@ import java.sql.Time;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Insert;
 import androidx.room.PrimaryKey;
 
 @Entity
@@ -38,7 +39,10 @@ public class DefaultSettings {
         DefaultCustomMessage = pDefaultCustomMessage;
     }
 
+
     public String getDefaultCustomMessage(){
         return DefaultCustomMessage;
     }
+
+
 }

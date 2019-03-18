@@ -17,17 +17,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //checkFirstRun();
-        AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
-        DefaultSettingsDao defaultDao = db.getDefaultDao();
-        DefaultSettings defaultSettingsObj = new DefaultSettings(1,15,false,false,false,"This is an automated message");
-        defaultDao.createDefaultSettings(defaultSettingsObj);
-        //This should have created an entry in the database for default settings
+        checkFirstRun();
 
-        //DefaultSettings newDefaultSettings = defaultDao.getDefaultSettings();
-        //String aString = newDefaultSettings.getDefaultCustomMessage();
-        TextView tv = (TextView)findViewById(R.id.textView2);
-        tv.setText("Things");
 
     }
 
@@ -55,16 +46,15 @@ public class MainActivity extends AppCompatActivity {
             //Now put default values in
 
 
-            //AppDataBase db = Room.databaseBuilder(getApplicationContext(), AppDataBase.class, "database-name").build();
-            //DefaultSettingsDao mDao = db.getDefaultDao();
-            //DefaultSettings defaultSettingsObj = new DefaultSettings(1,15,false,false,false,"This is an automated message");
-            //mDao.createDefaultSettings(defaultSettingsObj);
+            AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
+            DefaultSettingsDao defaultDao = db.getDefaultDao();
+            DefaultSettings defaultSettings = new DefaultSettings(1,15,false,false,false,"This is an automated message");
+            defaultDao.insert(defaultSettings);
             //This should have created an entry in the database for default settings
 
-            //DefaultSettings newDefaultSettings = mDao.getDefaultSettings();
-            //String aString = newDefaultSettings.getDefaultCustomMessage();
-            //TextView tv = (TextView)findViewById(R.id.textView2);
-            //tv.setText("Welcome To android");
+            DefaultSettings newDefaultSettings = defaultDao.getDefaultSettings();
+            TextView tv = (TextView)findViewById(R.id.textView2);
+            tv.setText("Welcome to TextTraQ, please go to the Settings Page to initialze your preferred settings for all contacts that will be added!");
 
 
 
