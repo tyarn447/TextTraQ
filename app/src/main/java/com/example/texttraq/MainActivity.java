@@ -29,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+   
+
+
     //PRE:Object exists
     //POST:checks if this is the first run of the app, if it is puts default values into database
     //else does nothing
