@@ -22,14 +22,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    Intent intent = new Intent(this, ContactsActivity.class);
-
     public void goToContacts(View view) {
+        Intent intent = new Intent(this, ContactsActivity.class);
         startActivity(intent);
     }
 
+    public void goToMain(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 
-   
+    public void goToSettings(View view) {
+        Intent intent = new Intent(this, settingsActivity.class);
+        startActivity(intent);
+    }
+
 
 
     //PRE:Object exists
@@ -57,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
             DefaultSettings newDefaultSettings = defaultDao.getDefaultSettings();
             TextView tv = (TextView)findViewById(R.id.textView2);
-            tv.setText("Welcome to TextTraQ, please go to the Settings Page to initialze your preferred settings for all contacts that will be added!");
+            tv.setText("Welcome to TextTraQ, please go to the Settings Page to initialize your preferred settings for all contacts that will be added!");
 
 
 
