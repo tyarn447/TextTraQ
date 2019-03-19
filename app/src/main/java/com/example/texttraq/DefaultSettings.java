@@ -4,6 +4,7 @@ import java.sql.Time;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Insert;
 import androidx.room.PrimaryKey;
 
 @Entity
@@ -38,7 +39,37 @@ public class DefaultSettings {
         DefaultCustomMessage = pDefaultCustomMessage;
     }
 
+    //PRE:object exists
+    //POST:returns the default custom message member data of this object
     public String getDefaultCustomMessage(){
+
         return DefaultCustomMessage;
     }
+
+    //PRE:object exists
+    //POST:returns the default custom message data of this object
+    public int getDefaultTime(){
+        return DefaultTime;
+    }
+
+    //PRE:object exists
+    //POST:returns whether DefaultLocation is true or false
+    public Boolean getDefaultLocation(){
+        return DefaultLocation;
+    }
+
+    //PRE:object exists
+    //POST:returns whether DefaultSpeed is true or false
+    public Boolean getDefaultSpeed(){
+        return DefaultSpeed;
+    }
+
+    //PRE:object exists
+    //POST:returns whether DefaultETA is true or false
+    public Boolean getDefaultETA(){
+        return DefaultETA;
+    }
+
+
+
 }

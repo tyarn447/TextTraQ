@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         checkFirstRun();
 
+
     }
 
     Intent intent = new Intent(this, ContactsActivity.class);
@@ -26,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     public void goToContacts(View view) {
         startActivity(intent);
     }
+
+
+   
 
 
     //PRE:Object exists
@@ -45,16 +49,15 @@ public class MainActivity extends AppCompatActivity {
             //Now put default values in
 
 
-            AppDataBase db = Room.databaseBuilder(getApplicationContext(), AppDataBase.class, "database-name").build();
-            DefaultSettingsDao mDao = db.defaultDao();
-            DefaultSettings defaultSettingsObj = new DefaultSettings(1,15,false,false,false,"This is an automated message");
-            mDao.createDefaultSettings(defaultSettingsObj);
+            AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
+            DefaultSettingsDao defaultDao = db.getDefaultDao();
+            DefaultSettings defaultSettings = new DefaultSettings(1,15,false,false,false,"This is an automated message");
+            defaultDao.insert(defaultSettings);
             //This should have created an entry in the database for default settings
 
-            DefaultSettings newDefaultSettings = db.defaultDao().getDefaultSettings();
-            String aString = newDefaultSettings.getDefaultCustomMessage();
+            DefaultSettings newDefaultSettings = defaultDao.getDefaultSettings();
             TextView tv = (TextView)findViewById(R.id.textView2);
-            tv.setText("Welcome To android");
+            tv.setText("Welcome to TextTraQ, please go to the Settings Page to initialze your preferred settings for all contacts that will be added!");
 
 
 

@@ -35,6 +35,7 @@
     <string name="contact1name">Contact1Name</string>
     <string name="contact2name">Contact2Name</string>
     <string name="contactname">ContactName</string>
-    <string name="enter_custom_message">Enter Custom Message</string>
+    <string name="minutes_between_text">Minutes Between Text</string>
+    <string name="enter_a_custom_message">Enter a Custom Message</string>
 
 </resources>

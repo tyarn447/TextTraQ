@@ -83,7 +83,7 @@
         app:layout_constraintTop_toBottomOf="@+id/settingsTitle" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/locationSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
@@ -111,7 +111,7 @@
         android:text="@string/send_speed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch1" />
+        app:layout_constraintTop_toBottomOf="@+id/locationSwitch" />
 
     <Button
         android:id="@+id/applyChanges"
@@ -130,7 +130,7 @@
         android:layout_height="85dp"
         android:layout_marginTop="64dp"
         android:ems="10"
-        android:hint="@string/enter_custom_message"
+        android:hint="@string/enter_a_custom_message"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
