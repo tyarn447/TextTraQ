@@ -2,6 +2,7 @@ package com.example.texttraq;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -42,6 +43,22 @@ public class settingsActivity extends AppCompatActivity {
         defLocation.setChecked(defaultLocation);
         defSpeed.setChecked(defaultSpeed);
         defETA.setChecked(defaultETA);
+    }
+
+
+    public void goToMain(View view) {
+         Intent intent = new Intent(this, MainActivity.class);
+         startActivity(intent);
+    }
+
+    public void goToSettings(View view) {
+        Intent intent = new Intent(this, settingsActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToContacts(View view) {
+        Intent intent = new Intent(this, ContactsActivity.class);
+        startActivity(intent);
     }
 
     //PRE:this page exists

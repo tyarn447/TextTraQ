@@ -9,7 +9,7 @@
 
     <Button
         android:id="@+id/startButton"
-        android:layout_width="119dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -25,7 +25,7 @@
 
     <Button
         android:id="@+id/startButton2"
-        android:layout_width="119dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -41,7 +41,7 @@
 
     <Button
         android:id="@+id/startButton3"
-        android:layout_width="119dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
@@ -54,14 +54,14 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="169dp"
-        android:layout_height="74dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/navigation"
         android:textColor="@android:color/white"
         android:textSize="30sp"
         app:fontFamily="cursive"
+        app:layout_constraintBottom_toTopOf="@+id/mapView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/navButton" />
@@ -79,14 +79,12 @@
 
     <Button
         android:id="@+id/navButton"
-        android:layout_width="130dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:onClick="goToMain"
         android:text="@string/navigation"
         app:layout_constraintEnd_toStartOf="@+id/settingsButton"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/contactsButton"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -94,22 +92,21 @@
         android:id="@+id/settingsButton"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:onClick="launchSettingsActivity"
+        android:onClick="goToSettings"
         android:text="@string/settings"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/navButton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
-        android:layout_width="333dp"
+        android:layout_width="336dp"
         android:layout_height="296dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintBottom_toTopOf="@+id/startButton"/>
 
     <TextView
         android:id="@+id/textView2"
