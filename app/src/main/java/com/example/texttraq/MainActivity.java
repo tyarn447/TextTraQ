@@ -99,6 +99,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng ny = new LatLng(40.7143528, -74.0059731);
         gmap.moveCamera(CameraUpdateFactory.newLatLng(ny));
     }
+
+    Button startButton2 = findViewById(R.id.startButton2);
+    Button startButton = findViewById(R.id.startButton);
+    Button startButton3 = findViewById(R.id.startButton2);
+
+    public void pause(View view) {
+        startButton2.setVisibility(View.INVISIBLE);
+        startButton.setVisibility(View.VISIBLE);
+    }
+
+    public void stop(View view) {
+        startButton.setVisibility(View.VISIBLE);
+        startButton2.setVisibility(View.INVISIBLE);
+        startButton3.setVisibility(View.INVISIBLE);
+    }
+
+    public void start(View view) {
+
+        startButton.setVisibility(View.INVISIBLE);
+        startButton2.setVisibility(View.VISIBLE);
+        startButton3.setVisibility(View.VISIBLE);
+    }
 }
 
 
