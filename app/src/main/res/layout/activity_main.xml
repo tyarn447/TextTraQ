@@ -19,6 +19,7 @@
         android:background="@android:color/white"
         android:text="@string/start_journey"
         android:textColor="@android:color/black"
+        android:onClick="start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/startButton3"
         app:layout_constraintStart_toEndOf="@+id/startButton2" />
@@ -33,8 +34,10 @@
         android:layout_marginRight="276dp"
         android:layout_marginBottom="60dp"
         android:background="@android:color/white"
+        android:onClick="pause"
         android:text="@string/pause"
         android:textColor="@android:color/black"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -47,8 +50,10 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="60dp"
         android:background="@android:color/white"
+        android:onClick="stop"
         android:text="@string/stop"
         android:textColor="@android:color/black"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -125,6 +130,7 @@
         app:layout_constraintBottom_toTopOf="@+id/startButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mapView" />
+        app:layout_constraintTop_toBottomOf="@+id/mapView"
+        app:layout_constraintVertical_bias="0.624" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
