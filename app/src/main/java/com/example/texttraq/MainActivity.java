@@ -49,12 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    //PRE:settings button exists
-    //POST:Redirects user to the settings page
-    public void launchSettingsActivity(View view){
-        Intent intent = new Intent(this, settingsActivity.class);
-        startActivity(intent);
-    }
+ 
 
 
     //PRE:Object exists
