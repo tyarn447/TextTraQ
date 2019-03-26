@@ -37,5 +37,7 @@
     <string name="contactname">ContactName</string>
     <string name="minutes_between_text">Minutes Between Text</string>
     <string name="enter_a_custom_message">Enter a Custom Message</string>
+    <string name="search_location_here">Search Location Here</string>
+    <string name="search">Search</string>
 
 </resources>

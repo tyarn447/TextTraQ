@@ -3,9 +3,12 @@ package com.example.texttraq;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -15,6 +18,9 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
+import java.util.List;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
@@ -22,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapView mapView;
     private GoogleMap gmap;
     private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +99,42 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    //********************
+    //all overrides just implemented for mapviews sake
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+    @Override
+    protected void onPause() {
+        mapView.onPause();
+        super.onPause();
+    }
+    @Override
+    protected void onDestroy() {
+        mapView.onDestroy();
+        super.onDestroy();
+    }
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+    //*******************************
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gmap = googleMap;
@@ -100,22 +143,55 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         gmap.moveCamera(CameraUpdateFactory.newLatLng(ny));
     }
 
-    Button startButton2 = findViewById(R.id.startButton2);
-    Button startButton = findViewById(R.id.startButton);
-    Button startButton3 = findViewById(R.id.startButton2);
+    //PRE:edittext and button need to exist
+    //POST:finds addresses close to the one that you put in
+    public void onSearchPress(View view){
+        EditText search = (EditText) findViewById(R.id.editText);
+        String location = search.getText().toString();
+        List<Address> addressList = null;
+
+        if(location != null || !location.equals("")){
+            Geocoder geocoder = new Geocoder(this);
+            try{
+                addressList = geocoder.getFromLocationName(location,1);
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            }
+            Address address = addressList.get(0);
+            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+            gmap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+        }
+    }
+
+
+
+
+
+
 
     public void pause(View view) {
+        Button startButton3 = findViewById(R.id.startButton3);
+        Button startButton = findViewById(R.id.startButton);
+        Button startButton2 = findViewById(R.id.startButton2);
         startButton2.setVisibility(View.INVISIBLE);
         startButton.setVisibility(View.VISIBLE);
     }
 
     public void stop(View view) {
+        Button startButton3 = findViewById(R.id.startButton3);
+        Button startButton = findViewById(R.id.startButton);
+        Button startButton2 = findViewById(R.id.startButton2);
         startButton.setVisibility(View.VISIBLE);
         startButton2.setVisibility(View.INVISIBLE);
         startButton3.setVisibility(View.INVISIBLE);
     }
 
     public void start(View view) {
+        Button startButton3 = findViewById(R.id.startButton3);
+        Button startButton = findViewById(R.id.startButton);
+        Button startButton2 = findViewById(R.id.startButton2);
 
         startButton.setVisibility(View.INVISIBLE);
         startButton2.setVisibility(View.VISIBLE);
