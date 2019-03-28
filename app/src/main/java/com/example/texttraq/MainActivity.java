@@ -18,6 +18,8 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -161,6 +163,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Address address = addressList.get(0);
             LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
             gmap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+            TextView tv = (TextView)findViewById(R.id.textView2);
+            tv.setText("If the map currently shows your desired destination and you would like to start your journey, please press the 'Start Journey' button, if it is not, please enter a more specific address.");
 
         }
     }
@@ -197,6 +201,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         startButton2.setVisibility(View.VISIBLE);
         startButton3.setVisibility(View.VISIBLE);
     }
+
+
 }
 
 
