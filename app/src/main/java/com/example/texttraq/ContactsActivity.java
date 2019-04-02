@@ -10,9 +10,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.Layout;
 import android.util.AndroidException;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import java.util.List;
@@ -22,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.ColumnInfo;
 import androidx.room.Dao;
 import androidx.room.Database;
@@ -121,7 +125,7 @@ public class ContactsActivity extends AppCompatActivity {
     LiveData<List<Word>> getAllWord();
 
     @Database(entities = {Word.class}, version = 1, exportSchema = false)
-    public abstract class WordRoomDatabase extends RoomDatabase {
+    public abstract static class WordRoomDatabase extends RoomDatabase {
 
         public abstract WordDao wordDao();
         private static WordRoomDatabase INSTANCE;
@@ -183,6 +187,19 @@ public class ContactsActivity extends AppCompatActivity {
 
         LiveData<List<Word>> getAllWords() { return mAllWords; }
         public void insert(Word word) {mRepository.insert(word);}
+    }
+
+    public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
+
+        private final LayoutInflater mInflator;
+        private List<Word> mWords; // Cached copy of words
+
+        WordListAdapter(Context context) { mInflator = LayoutInflater.from(context); }
+
+        @Override
+        public WordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = mInflator.inflate(R.layout.recyclerview_item
+        }
     }
 
 }
