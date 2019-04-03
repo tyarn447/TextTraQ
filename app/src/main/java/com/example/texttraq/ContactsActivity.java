@@ -12,11 +12,33 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 public class ContactsActivity extends AppCompatActivity {
     public static final int PICK_CONTACT = 1;
     private static final String LOG_TAG =
             MainActivity.class.getSimpleName();
+    public static final String EXTRAMESSAGE = "Nothing now";
+    public static final String EXTRAMESSAGE2 = "Nothing now";
+    //these two are for passing to intent that goes to contactsettings activity
+
+
+
+    /* Notes For Alex From Taylor
+    First on the recycler view make sure each button shows the name and number so we have a way of getting
+    both the name and number from the button,
+    Then when you are able to click each one individual you want to add both the name and number into the intent,
+    ie. you want to add the Name of the person into the EXTRAMESSAGE i have defined above, and you want to add the
+    Number of the person into the EXTRAMESSAGE2 I have defined above as well, once those are both added into the intent
+    you pass the intent along to the contactSettings activity, I have created the contact settings activity so that it will
+    take both those extramessages you have passed along and make the page header have the persons name and so giving
+    the page the name and number is crucial because it allows me to grab their info from the database so that we can
+    initialze the page with it so it looks correct, also allows me to update their settings after when the apply button is pressed,
+    that page is essentially finished just need to get the recycler view and pressing each one working... think you need
+    to do something with an onclicklistener for this.
+
+     */
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +85,22 @@ public class ContactsActivity extends AppCompatActivity {
                         Button numberButton = findViewById(R.id.button2);
                         nameButton.setText(name);
                         numberButton.setText(phoneNumber);
+
+                        //add stuff to database
+                        AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
+                        DefaultSettingsDao defaultDao = db.getDefaultDao();
+                        DefaultSettings defaultSettings = defaultDao.getDefaultSettings();
+                        String defCustMsg = defaultSettings.getDefaultCustomMessage();
+                        int defTime = defaultSettings.getDefaultTime();
+                        Boolean defSpeed = defaultSettings.getDefaultSpeed();
+                        Boolean defLoc = defaultSettings.getDefaultLocation();
+                        Boolean defETA = defaultSettings.getDefaultETA();
+
+                        //make new object for contact
+                        ContactTableDao contactTableDao = db.getContactDao();
+                        ContactTable contactTable = new ContactTable(name,phoneNumber,defTime,defLoc,defSpeed,defETA,defCustMsg);
+                        //insert new contact into database
+                        contactTableDao.insert(contactTable);
                     }
                 }
             }

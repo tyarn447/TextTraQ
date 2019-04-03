@@ -5,18 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/design_default_color_primary_dark"
-    tools:context=".ContactSettingsActivity">
-
-
+    tools:context=".settingsActivity">
 
 
     <TextView
         android:id="@+id/settingsTitle"
-        android:layout_width="169dp"
-        android:layout_height="74dp"
+        android:layout_width="160dp"
+        android:layout_height="67dp"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:text="@string/contactname"
+        android:text="@string/settings"
         android:textColor="@android:color/white"
         android:textSize="30sp"
         app:fontFamily="cursive"
@@ -44,11 +42,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/navigation"
-        android:onClick="goToMain"
         app:layout_constraintEnd_toStartOf="@+id/settingsButton"
         app:layout_constraintStart_toEndOf="@+id/contactsButton"
         app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/settingsButton"
         android:layout_width="130dp"
@@ -56,51 +52,32 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/settings"
-        android:onClick="goToSettings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="254dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:ems="10"
-        android:hint="@string/input_time_between_messages"
-        android:inputType="time"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settingsTitle" />
-
-    <TextView
-        android:id="@+id/timeText"
-        android:layout_width="139dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:gravity="center"
-        android:text="@string/time_between_messages"
-        app:layout_constraintEnd_toStartOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/settingsTitle" />
 
     <Switch
         android:id="@+id/locationSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginStart="141dp"
+        android:layout_marginLeft="141dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="140dp"
+        android:layout_marginRight="140dp"
         android:text="@string/send_location"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/timeText" />
 
     <Switch
         android:id="@+id/ETASwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="32dp"
         android:text="@string/send_eta"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -110,8 +87,13 @@
         android:id="@+id/speedSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
+        android:layout_marginStart="141dp"
+        android:layout_marginLeft="141dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="157dp"
+        android:layout_marginRight="157dp"
         android:text="@string/send_speed"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/locationSwitch" />
@@ -120,23 +102,102 @@
         android:id="@+id/applyChanges"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="16dp"
+        android:onClick="applySettings"
         android:text="@string/apply_settings"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/custMessage" />
 
     <EditText
         android:id="@+id/custMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="85dp"
-        android:layout_marginTop="64dp"
+        android:layout_width="319dp"
+        android:layout_height="145dp"
+        android:layout_marginTop="36dp"
+        android:autofillHints=""
+        android:background="@android:color/white"
         android:ems="10"
+        android:gravity="top|left"
         android:hint="@string/enter_a_custom_message"
-        android:inputType="textPersonName"
+        android:inputType="textMultiLine"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.923"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ETASwitch" />
+
+    <EditText
+        android:id="@+id/timeText"
+        android:layout_width="113dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:autofillHints=""
+        android:background="@android:color/white"
+        android:ems="10"
+        android:hint="@string/minutes_between_text"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.355"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/settingsTitle" />
+
+    <TextView
+        android:id="@+id/congratsMsg"
+        android:layout_width="281dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:gravity="center"
+        android:textColor="@android:color/holo_red_dark"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/settingsTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contactsButton" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="205dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="Enter Minutes Between Messages"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/locationSwitch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingsTitle" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="135dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="Enter Custom Message"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/custMessage"
+        app:layout_constraintEnd_toStartOf="@+id/ETASwitch"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/speedSwitch"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
