@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -343,6 +345,8 @@ public class ContactsActivity extends AppCompatActivity {
             }
         }
     }
+
+    public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
 
     private WordViewModel mWordViewModel;
 

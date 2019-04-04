@@ -39,5 +39,6 @@
     <string name="enter_a_custom_message">Enter a Custom Message</string>
     <string name="search_location_here">Search Location Here</string>
     <string name="search">Search</string>
+    <string name="empty_not_saved">No word entered</string>
 
 </resources>
