@@ -5,11 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content">
 
-    <TextView
+    <Button
         android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         style="@style/text_view_style"
-        tools:text="Contact" />
+        tools:text="Contact"
+        android:onClick="goToContactSettings"/>
 
 </LinearLayout>

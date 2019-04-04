@@ -1,10 +1,13 @@
 package com.example.texttraq;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Layout;
@@ -14,15 +17,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
+import android.widget.TextView;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.room.Room;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.ColumnInfo;
 import androidx.room.Dao;
@@ -33,6 +41,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.Query;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 public class ContactsActivity extends AppCompatActivity {
     public static final int PICK_CONTACT = 1;
@@ -126,12 +135,26 @@ public class ContactsActivity extends AppCompatActivity {
             }
         }
 
+        RecyclerView recyclerView = findViewById(R.id.contact_info);
+        final WordListAdapter adapter = new WordListAdapter(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        mWordViewModel = ViewModelProviders.of(this).get(WordViewModel.class);
+
+        mWordViewModel.getAllWords().observe(this, new Observer<List<Word>>() {
+            @Override
+            public void onChanged(@Nullable final List<Word> words) {
+                // Update the cached copy of the words in the adapter.
+                adapter.setWords(words);
+            }
+        });
     }
 
     // New Code
 
     @Entity(tableName = "word_table")
-    public class Word {
+    public static class Word {
 
         @PrimaryKey
         @NonNull
@@ -144,20 +167,19 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
     @Dao
-    public interface WordDao{
+    public interface WordDao {
 
         @Insert
-        void insert (Word word);
+        void insert(Word word);
 
         @Query("DELETE FROM word_table")
         void deleteAll();
 
         @Query("SELECT * from word_table ORDER BY word ASC")
-        List<Word> getAllWords();
+        LiveData<List<Word>> getAllWords();
     }
 
-    @Query("SELECT * from word_table ORDER BY word ASC")
-    LiveData<List<Word>> getAllWord();
+
 
     @Database(entities = {Word.class}, version = 1, exportSchema = false)
     public abstract static class WordRoomDatabase extends RoomDatabase {
@@ -165,29 +187,47 @@ public class ContactsActivity extends AppCompatActivity {
         public abstract WordDao wordDao();
         private static WordRoomDatabase INSTANCE;
 
+        private static RoomDatabase.Callback sRoomDatabaseCallback =
+                new RoomDatabase.Callback(){
+
+                    @Override
+                    public void onOpen (@NonNull SupportSQLiteDatabase db){
+                        super.onOpen(db);
+                        new PopulateDbAsync(INSTANCE).execute();
+                    }
+                };
+
         static WordRoomDatabase getDatabase(final Context context) {
             if (INSTANCE == null) {
                 synchronized (WordRoomDatabase.class) {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                 WordRoomDatabase.class, "word_database")
-                                .fallbackToDestructiveMigration().build();
+                                // Wipes and rebuilds instead of migrating
+                                // if no Migration object.
+                                // Migration is not part of this practical.
+                                .fallbackToDestructiveMigration()
+                                .addCallback(sRoomDatabaseCallback)
+                                .build();
                     }
                 }
             }
             return INSTANCE;
         }
-
     }
 
-    public class WordRepository {
+    public static class WordRepository {
+
         private WordDao mWordDao;
         private LiveData<List<Word>> mAllWords;
+
         WordRepository(Application application) {
             WordRoomDatabase db = WordRoomDatabase.getDatabase(application);
             mWordDao = db.wordDao();
             mAllWords = mWordDao.getAllWords();
         }
+
+
 
         LiveData<List<Word>> getAllWords() {
             return mAllWords;
@@ -198,22 +238,53 @@ public class ContactsActivity extends AppCompatActivity {
         }
 
         private static class insertAsyncTask extends AsyncTask<Word, Void, Void> {
+
             private WordDao mAsyncTaskDao;
+
             insertAsyncTask(WordDao dao) {
                 mAsyncTaskDao = dao;
             }
 
             @Override
-            protected  Void doInBackground(final Word... params) {
+            protected Void doInBackground(final Word... params) {
                 mAsyncTaskDao.insert(params[0]);
                 return null;
             }
         }
     }
+    /**
+     * Populate the database in the background.
+     */
+    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
+
+        private final WordDao mDao;
+        String[] words = {"dolphin", "crocodile", "cobra"};
+
+        PopulateDbAsync(WordRoomDatabase db) {
+            mDao = db.wordDao();
+        }
+
+        @Override
+        protected Void doInBackground(final Void... params) {
+            // Start the app with a clean database every time.
+            // Not needed if you only populate the database
+            // when it is first created
+            mDao.deleteAll();
+
+            for (int i = 0; i <= words.length - 1; i++) {
+                Word word = new Word(words[i]);
+                mDao.insert(word);
+            }
+            return null;
+        }
+    }
 
     public class WordViewModel extends AndroidViewModel {
+
         private WordRepository mRepository;
+
         private LiveData<List<Word>> mAllWords;
+
         public WordViewModel (Application application) {
             super(application);
             mRepository = new WordRepository(application);
@@ -221,20 +292,58 @@ public class ContactsActivity extends AppCompatActivity {
         }
 
         LiveData<List<Word>> getAllWords() { return mAllWords; }
-        public void insert(Word word) {mRepository.insert(word);}
+
+        public void insert(Word word) { mRepository.insert(word); }
     }
 
     public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
 
-        private final LayoutInflater mInflator;
+        private final LayoutInflater mInflater;
         private List<Word> mWords; // Cached copy of words
 
-        WordListAdapter(Context context) { mInflator = LayoutInflater.from(context); }
+        WordListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
 
         @Override
         public WordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = mInflator.inflate(R.layout.recyclerview_item
+            View itemView = mInflater.inflate(R.layout.contact_info, parent, false);
+            return new WordViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(WordViewHolder holder, int position) {
+            if (mWords != null) {
+                Word current = mWords.get(position);
+                holder.wordItemView.setText(current.getWord());
+            } else {
+                // Covers the case of data not being ready yet.
+                holder.wordItemView.setText("No Word");
+            }
+        }
+
+        void setWords(List<Word> words){
+            mWords = words;
+            notifyDataSetChanged();
+        }
+
+        // getItemCount() is called many times, and when it is first called,
+        // mWords has not been updated (means initially, it's null, and we can't return null).
+        @Override
+        public int getItemCount() {
+            if (mWords != null)
+                return mWords.size();
+            else return 0;
+        }
+
+        class WordViewHolder extends RecyclerView.ViewHolder {
+            private final TextView wordItemView;
+
+            private WordViewHolder(View itemView) {
+                super(itemView);
+                wordItemView = itemView.findViewById(R.id.textView);
+            }
         }
     }
+
+    private WordViewModel mWordViewModel;
 
 }

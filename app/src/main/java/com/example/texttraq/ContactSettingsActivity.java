@@ -100,6 +100,8 @@ public class ContactSettingsActivity extends AppCompatActivity {
     }
 
 
-
-
+    public void goToContactSettings(View view) {
+        Intent intent = new Intent(this, ContactSettingsActivity.class);
+        startActivity(intent);
+    }
 }
