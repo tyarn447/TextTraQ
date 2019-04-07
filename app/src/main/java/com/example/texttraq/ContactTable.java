@@ -1,5 +1,6 @@
 package com.example.texttraq;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -7,9 +8,9 @@ import androidx.room.PrimaryKey;
 @Entity(primaryKeys = {"Name","Number"})
 public class ContactTable {
 
-@PrimaryKey
+@ColumnInfo @NonNull
     public String Name;
-@ColumnInfo
+@ColumnInfo @NonNull
     public String Number;
 @ColumnInfo
     public int TimeBetween;
@@ -21,6 +22,8 @@ public class ContactTable {
     public Boolean ETA;
 @ColumnInfo
     public String CustomMessage;
+
+    public ContactTable(){}
 
     public ContactTable(String pName, String pNumber, int pContactTime, Boolean pContactLocation, Boolean pContactSpeed, Boolean pContactETA, String pCustomMessage) {
         Name = pName;

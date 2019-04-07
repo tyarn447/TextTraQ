@@ -29,7 +29,7 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-ext {
-    roomVersion = '1.1.1'
-    archLifecycleVersion = '1.1.1'
-}
+//ext {
+//    roomVersion = '1.1.1'
+//    archLifecycleVersion = '1.1.1'
+//}
