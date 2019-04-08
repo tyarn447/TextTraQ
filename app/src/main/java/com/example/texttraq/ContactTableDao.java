@@ -16,4 +16,9 @@ public interface ContactTableDao {
     //updates the user settings by matching the name and number
     @Update
     void updateUserSettings(ContactTable contactTable);
+
+    //PRE:table exists
+    //POST:gets all contacts from contactTable
+    @Query("SELECT * FROM ContactTable")
+    public ContactTable[] getAllContacts();
 }
