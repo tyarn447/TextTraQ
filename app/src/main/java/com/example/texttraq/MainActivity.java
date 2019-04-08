@@ -1,10 +1,15 @@
 package com.example.texttraq;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +28,7 @@ import org.w3c.dom.Text;
 import java.io.IOException;
 import java.util.List;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
@@ -30,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapView mapView;
     private GoogleMap gmap;
     private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
+    public Location myLocation = null;
+    public Location nextLocation = new Location("");
 
 
     @Override
@@ -39,14 +47,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         checkFirstRun();
 
         Bundle mapViewBundle = null;
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
         }
 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(mapViewBundle);
         mapView.getMapAsync(this);
-
 
 
     }
@@ -67,35 +74,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
-
     //PRE:Object exists
     //POST:checks if this is the first run of the app, if it is puts default values into database
     //else does nothing
-    public void checkFirstRun(){
+    public void checkFirstRun() {
         boolean notFirstRun = false;
 
-        SharedPreferences settings = getSharedPreferences("PREFS_NAME",0);
-        notFirstRun = settings.getBoolean("FIRST_RUN",false);
-        if(!notFirstRun){
+        SharedPreferences settings = getSharedPreferences("PREFS_NAME", 0);
+        notFirstRun = settings.getBoolean("FIRST_RUN", false);
+        if (!notFirstRun) {
             //ASSERT:This is the first time we are running the app
-            settings = getSharedPreferences("PREFS_NAME",0);
+            settings = getSharedPreferences("PREFS_NAME", 0);
             SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean("FIRST_RUN",true);
+            editor.putBoolean("FIRST_RUN", true);
             editor.commit();
             //Now put default values in
 
 
             AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
             DefaultSettingsDao defaultDao = db.getDefaultDao();
-            DefaultSettings defaultSettings = new DefaultSettings(1,15,false,false,false,"This is an automated message");
+            DefaultSettings defaultSettings = new DefaultSettings(1, 15, false, false, false, "This is an automated message");
             defaultDao.insert(defaultSettings);
             //This should have created an entry in the database for default settings
 
             DefaultSettings newDefaultSettings = defaultDao.getDefaultSettings();
-            TextView tv = (TextView)findViewById(R.id.textView2);
+            TextView tv = (TextView) findViewById(R.id.textView2);
             tv.setText("Welcome to TextTraQ, please go to the Settings Page to initialize your preferred settings for all contacts that will be added!");
-
 
 
         }
@@ -120,16 +124,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onStop();
         mapView.onStop();
     }
+
     @Override
     protected void onPause() {
         mapView.onPause();
         super.onPause();
     }
+
     @Override
     protected void onDestroy() {
         mapView.onDestroy();
         super.onDestroy();
     }
+
     @Override
     public void onLowMemory() {
         super.onLowMemory();
@@ -137,12 +144,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
     //*******************************
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gmap = googleMap;
         gmap.setMinZoomPreference(12);
-        LatLng ny = new LatLng(40.7143528, -74.0059731);
-        gmap.moveCamera(CameraUpdateFactory.newLatLng(ny));
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        double longitude = location.getLongitude();
+        double latitude = location.getLatitude();
+        myLocation = location;
+        //now we have our current location
+        LatLng myLoc = new LatLng(latitude, longitude);
+        gmap.moveCamera(CameraUpdateFactory.newLatLng(myLoc));
+    }
+
+    //PRE:permissions to access location are granted
+    //POST:gets last known/current location and sets our class variable lcation
+    //to be that location
+    public void getCurrLocation(){
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        myLocation = location;
     }
 
     //PRE:edittext and button need to exist
@@ -164,6 +197,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
             gmap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
             TextView tv = (TextView)findViewById(R.id.textView2);
+            nextLocation.setLatitude(address.getLatitude());
+            nextLocation.setLongitude(address.getLongitude());
             tv.setText("If the map currently shows your desired destination and you would like to start your journey, please press the 'Start Journey' button, if it is not, please enter a more specific address.");
 
         }
@@ -200,6 +235,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         startButton.setVisibility(View.INVISIBLE);
         startButton2.setVisibility(View.VISIBLE);
         startButton3.setVisibility(View.VISIBLE);
+        float distanceInMeters = myLocation.distanceTo(nextLocation);
+
+        //use google maps api instead to make a request using two lats and longs
+        //thatll get you the ETA
+
     }
 
 
