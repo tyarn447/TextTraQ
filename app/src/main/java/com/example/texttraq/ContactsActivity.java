@@ -46,14 +46,14 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-public class ContactsActivity extends AppCompatActivity {
+public class ContactsActivity extends AppCompatActivity{
     public static final int PICK_CONTACT = 1;
     private static final String LOG_TAG =
             MainActivity.class.getSimpleName();
     public static String EXTRAMESSAGE = "Name";
     public static String EXTRAMESSAGE2 = "Number";
-
     //these two are for passing to intent that goes to contactsettings activity
+    String recyclerViewList[];
 
 
 
@@ -84,10 +84,17 @@ public class ContactsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contacts);
 
         RecyclerView recyclerView = findViewById(R.id.aRecycleView);
-        final WordListAdapter adapter = new WordListAdapter(this);
-        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
+        ContactTableDao contactTableDao = db.getContactDao();
+        ContactTable users[] = contactTableDao.getAllContacts();
+
+        for (int i = 0; i < users.length; i++){
+            String string;
+            string = users[i].getName() + "," + users[i].getNumber();
+            recyclerViewList[i] = string;
+        }
 
     }
 
@@ -167,62 +174,56 @@ public class ContactsActivity extends AppCompatActivity {
         }
     }
 
-    public void goToContactSettings(View view)  {
-        /*
-        ContactTable users[] = contactTableDao.getAllContacts();
-        int mPosition = getLayoutPosition();
-        ContactTable aUser = (users[mPosition]);
-        EXTRAMESSAGE = String.valueOf(aUser.getName());
-        EXTRAMESSAGE2 = String.valueOf(aUser.getNumber());
-        Intent intent = new Intent(this, ContactSettingsActivity.class);
-        startActivity(intent);
-    */
-    }
+    public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder>  {
 
-    public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
+        public WordListAdapter(Context context, LinkedList<String> wordList) {
+            mInflater = LayoutInflater.from(context);
+        }
 
-        ContactTable users[] = contactTableDao.getAllContacts();
-        private final LayoutInflater mInflater;
-        private List<ContactTable> mWords = Arrays.asList(users);
+        private LayoutInflater mInflater;
 
-        WordListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
+        class WordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+            public final TextView wordItemView;
+            final WordListAdapter mAdapter;
+
+            public WordViewHolder(View itemView, WordListAdapter adapter) {
+                super(itemView);
+                wordItemView = itemView.findViewById(R.id.ContactInfo);
+                this.mAdapter = adapter;
+                itemView.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View v) {
+                // Get the position of the item that was clicked.
+                int mPosition = getLayoutPosition();
+
+                // Use that to access the affected item in mWordList.
+                String element = recyclerViewList[mPosition];
+
+                // Notify the adapter, that the data has changed so it can
+                // update the RecyclerView to display the data.
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+
+        @NonNull
         @Override
         public WordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = mInflater.inflate(R.layout.contact_info, parent, false);
-            return new WordViewHolder(itemView);
+            View mItemView = mInflater.inflate(R.layout.contact_info, parent, false);
+            return new WordViewHolder(mItemView, this);
         }
 
         @Override
         public void onBindViewHolder(WordViewHolder holder, int position) {
-            if (mWords != null) {
-                ContactTable current = mWords.get(position);
-                holder.wordItemView.setText(current.getName());
-            } else {
-                // Covers the case of data not being ready yet.
-                holder.wordItemView.setText("No contact");
-            }
-        }
-
-        void setWords(List<ContactTable> words){
-            mWords = words;
-            notifyDataSetChanged();
+            String mCurrent = recyclerViewList[position];
+            holder.wordItemView.setText(mCurrent);
         }
 
         @Override
         public int getItemCount() {
-            if (mWords != null)
-                return mWords.size();
-            else return 0;
-        }
-
-        class WordViewHolder extends RecyclerView.ViewHolder {
-            private final TextView wordItemView;
-
-            private WordViewHolder(View itemView) {
-                super(itemView);
-                wordItemView = itemView.findViewById(R.id.textView);
-            }
+            return recyclerViewList.length;
         }
     }
 }
