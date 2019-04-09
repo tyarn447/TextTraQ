@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,6 +126,22 @@ public class ContactsActivity extends AppCompatActivity {
                         ContactTable contactTable = new ContactTable(name, phoneNumber, defTime, defLoc, defSpeed, defETA, defCustMsg);
                         //insert new contact into database
                         contactTableDao.insert(contactTable);
+
+
+                        //example for alex
+                        //MUST ADD A USER TO DATABASE BEFOREHAND OR THIS WILL NOT WORK
+
+
+                        //ContactTable users[] = contactTableDao.getAllContacts();
+                        //ContactTable aUser = users[0];
+                        //String userName = aUser.getName();
+                        //String userNum = aUser.getNumber();
+                        //String message = userName + userNum;
+                        //Log.d(LOG_TAG, message);
+
+                        //example for alex end
+
+
                     }
                 }
             }
