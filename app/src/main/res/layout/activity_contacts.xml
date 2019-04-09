@@ -74,7 +74,7 @@
         app:srcCompat="@drawable/ic_plus_button" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
+        android:id="@+id/aRecycleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -85,7 +85,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ContactsTitle"
-        tools:listitem="@layout/contact_info"/>
+        tools:listitem="@layout/contact_info" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

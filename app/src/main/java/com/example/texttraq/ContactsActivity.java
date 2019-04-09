@@ -52,6 +52,7 @@ public class ContactsActivity extends AppCompatActivity {
             MainActivity.class.getSimpleName();
     public static String EXTRAMESSAGE = "Name";
     public static String EXTRAMESSAGE2 = "Number";
+
     //these two are for passing to intent that goes to contactsettings activity
 
 
@@ -69,16 +70,20 @@ public class ContactsActivity extends AppCompatActivity {
     that page is essentially finished just need to get the recycler view and pressing each one working... think you need
     to do something with an onclicklistener for this.
 
-     */
     AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
     ContactTableDao contactTableDao = db.getContactDao();
+
+
+     */
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        RecyclerView recyclerView = findViewById(R.id.aRecycleView);
         final WordListAdapter adapter = new WordListAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -136,7 +141,11 @@ public class ContactsActivity extends AppCompatActivity {
                         ContactTableDao contactTableDao = db.getContactDao();
                         ContactTable contactTable = new ContactTable(name, phoneNumber, defTime, defLoc, defSpeed, defETA, defCustMsg);
                         //insert new contact into database
-                        contactTableDao.insert(contactTable);
+                        if(contactTableDao.getUserSettings(name,phoneNumber) == null){
+                            //ASSERT:This user is not in table yet
+                            contactTableDao.insert(contactTable);
+                        }
+
 
                         //example for alex
                         //MUST ADD A USER TO DATABASE BEFOREHAND OR THIS WILL NOT WORK
