@@ -68,15 +68,15 @@
         android:clickable="true"
         android:onClick="findContact"
         app:backgroundTint="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toTopOf="@+id/contact_info"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contactsButton"
         app:srcCompat="@drawable/ic_plus_button" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/contact_info"
-        android:layout_width="212dp"
-        android:layout_height="65dp"
+        android:id="@+id/recyclerview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -86,24 +86,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ContactsTitle"
         tools:listitem="@layout/contact_info"/>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Button"
-        app:layout_constraintTop_toBottomOf="@+id/contact_info"
-        tools:layout_editor_absoluteX="161dp" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Button"
-        app:layout_constraintTop_toBottomOf="@+id/button"
-        tools:layout_editor_absoluteX="160dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

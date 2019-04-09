@@ -1,9 +1,11 @@
 package com.example.texttraq;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,8 +17,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -43,8 +50,8 @@ public class ContactsActivity extends AppCompatActivity {
     public static final int PICK_CONTACT = 1;
     private static final String LOG_TAG =
             MainActivity.class.getSimpleName();
-    public static final String EXTRAMESSAGE = "Nothing now";
-    public static final String EXTRAMESSAGE2 = "Nothing now";
+    public static String EXTRAMESSAGE = "Name";
+    public static String EXTRAMESSAGE2 = "Number";
     //these two are for passing to intent that goes to contactsettings activity
 
 
@@ -63,12 +70,20 @@ public class ContactsActivity extends AppCompatActivity {
     to do something with an onclicklistener for this.
 
      */
-
+    AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
+    ContactTableDao contactTableDao = db.getContactDao();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        final WordListAdapter adapter = new WordListAdapter(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
     }
 
     public void goToContacts(View view) {
@@ -106,10 +121,6 @@ public class ContactsActivity extends AppCompatActivity {
                     Cursor phones = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
                     if (phones.moveToFirst()) {
                         String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        Button nameButton = findViewById(R.id.button);
-                        Button numberButton = findViewById(R.id.button2);
-                        nameButton.setText(name);
-                        numberButton.setText(phoneNumber);
 
                         //add stuff to database
                         AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
@@ -126,7 +137,6 @@ public class ContactsActivity extends AppCompatActivity {
                         ContactTable contactTable = new ContactTable(name, phoneNumber, defTime, defLoc, defSpeed, defETA, defCustMsg);
                         //insert new contact into database
                         contactTableDao.insert(contactTable);
-
 
                         //example for alex
                         //MUST ADD A USER TO DATABASE BEFOREHAND OR THIS WILL NOT WORK
@@ -148,7 +158,62 @@ public class ContactsActivity extends AppCompatActivity {
         }
     }
 
+    public void goToContactSettings(View view)  {
+        /*
+        ContactTable users[] = contactTableDao.getAllContacts();
+        int mPosition = getLayoutPosition();
+        ContactTable aUser = (users[mPosition]);
+        EXTRAMESSAGE = String.valueOf(aUser.getName());
+        EXTRAMESSAGE2 = String.valueOf(aUser.getNumber());
+        Intent intent = new Intent(this, ContactSettingsActivity.class);
+        startActivity(intent);
+    */
+    }
 
+    public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
 
+        ContactTable users[] = contactTableDao.getAllContacts();
+        private final LayoutInflater mInflater;
+        private List<ContactTable> mWords = Arrays.asList(users);
 
+        WordListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
+
+        @Override
+        public WordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = mInflater.inflate(R.layout.contact_info, parent, false);
+            return new WordViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(WordViewHolder holder, int position) {
+            if (mWords != null) {
+                ContactTable current = mWords.get(position);
+                holder.wordItemView.setText(current.getName());
+            } else {
+                // Covers the case of data not being ready yet.
+                holder.wordItemView.setText("No contact");
+            }
+        }
+
+        void setWords(List<ContactTable> words){
+            mWords = words;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getItemCount() {
+            if (mWords != null)
+                return mWords.size();
+            else return 0;
+        }
+
+        class WordViewHolder extends RecyclerView.ViewHolder {
+            private final TextView wordItemView;
+
+            private WordViewHolder(View itemView) {
+                super(itemView);
+                wordItemView = itemView.findViewById(R.id.textView);
+            }
+        }
+    }
 }
