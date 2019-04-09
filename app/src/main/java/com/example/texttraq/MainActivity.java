@@ -27,6 +27,7 @@ import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -176,6 +177,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         myLocation = location;
+    }
+
+    //PRE:lat and long are the lattitude and longitude of the location you want the name of
+    //POST:returns city and state name of the place you are currently
+    public String getLocationName(double lat, double longitutde) throws IOException {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = geocoder.getFromLocation(lat, longitutde, 1);
+        String cityName = addresses.get(0).getAddressLine(0);
+        String stateName = addresses.get(0).getAddressLine(1);
+        String retVal = cityName + "," + stateName;
+        return retVal;
     }
 
     //PRE:edittext and button need to exist

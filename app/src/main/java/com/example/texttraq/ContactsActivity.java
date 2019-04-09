@@ -132,12 +132,12 @@ public class ContactsActivity extends AppCompatActivity {
                         //MUST ADD A USER TO DATABASE BEFOREHAND OR THIS WILL NOT WORK
 
 
-                        //ContactTable users[] = contactTableDao.getAllContacts();
-                        //ContactTable aUser = users[0];
-                        //String userName = aUser.getName();
-                        //String userNum = aUser.getNumber();
-                        //String message = userName + userNum;
-                        //Log.d(LOG_TAG, message);
+                        ContactTable users[] = contactTableDao.getAllContacts();
+                        ContactTable aUser = users[0];
+                        String userName = aUser.getName();
+                        String userNum = aUser.getNumber();
+                        String message = userName + userNum + "athing";
+                        Log.d(LOG_TAG, message);
 
                         //example for alex end
 
