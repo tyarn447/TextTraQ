@@ -149,24 +149,25 @@ public class ContactsActivity extends AppCompatActivity{
 
                         //make new object for contact
                         ContactTableDao contactTableDao = db.getContactDao();
-                        ContactTable contactTable = new ContactTable(name, phoneNumber, defTime, defLoc, defSpeed, defETA, defCustMsg);
+                        ContactTable newUser = new ContactTable(name, phoneNumber, defTime, defLoc, defSpeed, defETA, defCustMsg);
                         //insert new contact into database
                         if(contactTableDao.getUserSettings(name,phoneNumber) == null){
                             //ASSERT:This user is not in table yet
-                            contactTableDao.insert(contactTable);
+                            contactTableDao.insert(newUser);
+                            //ContactTable users[] = contactTableDao.getAllContacts();
+                            //ContactTable aUser = users[0];
+                            //String userName = aUser.getName();
+                            //String userNum = aUser.getNumber();
+                            //String message = userName + userNum + "athing";
+                            //Log.d(LOG_TAG, message);
+                            //Button aButton = (Button)findViewById(R.id.contactsButton);
+
                         }
 
 
                         //example for alex
                         //MUST ADD A USER TO DATABASE BEFOREHAND OR THIS WILL NOT WORK
 
-
-                        ContactTable users[] = contactTableDao.getAllContacts();
-                        ContactTable aUser = users[0];
-                        String userName = aUser.getName();
-                        String userNum = aUser.getNumber();
-                        String message = userName + userNum + "athing";
-                        Log.d(LOG_TAG, message);
 
                         //example for alex end
 
