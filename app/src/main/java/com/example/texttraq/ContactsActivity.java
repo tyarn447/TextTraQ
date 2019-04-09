@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,7 +54,8 @@ public class ContactsActivity extends AppCompatActivity{
     public static String EXTRAMESSAGE = "Name";
     public static String EXTRAMESSAGE2 = "Number";
     //these two are for passing to intent that goes to contactsettings activity
-    String recyclerViewList[];
+    public List<String> aList = new ArrayList<String>();
+    public String[] recyclerViewList;
 
 
 
@@ -91,10 +93,11 @@ public class ContactsActivity extends AppCompatActivity{
         ContactTable users[] = contactTableDao.getAllContacts();
 
         for (int i = 0; i < users.length; i++){
-            String string;
-            string = users[i].getName() + "," + users[i].getNumber();
-            recyclerViewList[i] = string;
+            String aString;
+            aString = users[i].getName() + "," + users[i].getNumber();
+            aList.add(aString);
         }
+        recyclerViewList = aList.toArray(new String[aList.size()]);
 
     }
 
