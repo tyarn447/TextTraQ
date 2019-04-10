@@ -1,6 +1,7 @@
 package com.example.texttraq;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -173,20 +175,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //PRE:permissions to access location are granted
     //POST:gets last known/current location and sets our class variable lcation
     //to be that location
-    public void getCurrLocation(){
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void getCurrLocation() {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         myLocation = location;
     }
 
     //PRE:lat and long are the lattitude and longitude of the location you want the name of
     //POST:returns city and state name of the place you are currently
-    public String getLocationName(double lat, double longitutde) throws IOException {
+    public String getLocationName(double lat, double longitude) throws IOException {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        List<Address> addresses = geocoder.getFromLocation(lat, longitutde, 1);
+        List<Address> addresses = geocoder.getFromLocation(lat, longitude, 1);
         String cityName = addresses.get(0).getAddressLine(0);
         String stateName = addresses.get(0).getAddressLine(1);
-        String retVal = cityName + "," + stateName;
+        String retVal = cityName;
         return retVal;
     }
 
@@ -239,7 +252,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         startButton3.setVisibility(View.INVISIBLE);
     }
 
-    public void start(View view) {
+    @TargetApi(Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void start(View view) throws IOException {
         Button startButton3 = findViewById(R.id.startButton3);
         Button startButton = findViewById(R.id.startButton);
         Button startButton2 = findViewById(R.id.startButton2);
@@ -247,10 +262,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         startButton.setVisibility(View.INVISIBLE);
         startButton2.setVisibility(View.VISIBLE);
         startButton3.setVisibility(View.VISIBLE);
+
+
         float distanceInMeters = myLocation.distanceTo(nextLocation);
 
         //use google maps api instead to make a request using two lats and longs
         //thatll get you the ETA
+
+        SmsManager smsManager = SmsManager.getDefault();
+        getCurrLocation();
+        String myLoc = getLocationName(myLocation.getLatitude(),myLocation.getLongitude());
+        String aMessage = "Hey this is a text message from your app you are currently in" + myLoc;
+        smsManager.sendTextMessage("2073176507",null,aMessage,null,null);
 
     }
 
