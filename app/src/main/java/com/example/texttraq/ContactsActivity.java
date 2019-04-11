@@ -47,13 +47,14 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-public class ContactsActivity extends AppCompatActivity{
+public class ContactsActivity extends AppCompatActivity {
     public static final int PICK_CONTACT = 1;
     private static final String LOG_TAG =
             MainActivity.class.getSimpleName();
     public static String EXTRAMESSAGE = "Name";
     public static String EXTRAMESSAGE2 = "Number";
     //these two are for passing to intent that goes to contactsettings activity
+
     public List<String> aList = new ArrayList<String>();
     public String[] recyclerViewList;
 
@@ -79,25 +80,28 @@ public class ContactsActivity extends AppCompatActivity{
      */
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
-        RecyclerView recyclerView = findViewById(R.id.aRecycleView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
         ContactTableDao contactTableDao = db.getContactDao();
-        ContactTable users[] = contactTableDao.getAllContacts();
+        final ContactTable users[] = contactTableDao.getAllContacts();
 
-        for (int i = 0; i < users.length; i++){
+        for (int i = 0; i < users.length; i++) {
             String aString;
             aString = users[i].getName() + "," + users[i].getNumber();
             aList.add(aString);
         }
         recyclerViewList = aList.toArray(new String[aList.size()]);
+
+        final WordListAdapter adapter = new WordListAdapter(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
@@ -116,7 +120,7 @@ public class ContactsActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
-    public void findContact(View view){
+    public void findContact(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         startActivityForResult(intent, PICK_CONTACT);
     }
@@ -151,7 +155,7 @@ public class ContactsActivity extends AppCompatActivity{
                         ContactTableDao contactTableDao = db.getContactDao();
                         ContactTable newUser = new ContactTable(name, phoneNumber, defTime, defLoc, defSpeed, defETA, defCustMsg);
                         //insert new contact into database
-                        if(contactTableDao.getUserSettings(name,phoneNumber) == null){
+                        if (contactTableDao.getUserSettings(name, phoneNumber) == null) {
                             //ASSERT:This user is not in table yet
                             contactTableDao.insert(newUser);
                             //ContactTable users[] = contactTableDao.getAllContacts();
@@ -178,56 +182,50 @@ public class ContactsActivity extends AppCompatActivity{
         }
     }
 
-    public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder>  {
+    public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
 
-        public WordListAdapter(Context context, LinkedList<String> wordList) {
+        private final LayoutInflater mInflater;
+
+
+        WordListAdapter(Context context) {
             mInflater = LayoutInflater.from(context);
         }
 
-        private LayoutInflater mInflater;
-
-        class WordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-            public final TextView wordItemView;
-            final WordListAdapter mAdapter;
-
-            public WordViewHolder(View itemView, WordListAdapter adapter) {
-                super(itemView);
-                wordItemView = itemView.findViewById(R.id.ContactInfo);
-                this.mAdapter = adapter;
-                itemView.setOnClickListener(this);
-            }
-
-            @Override
-            public void onClick(View v) {
-                // Get the position of the item that was clicked.
-                int mPosition = getLayoutPosition();
-
-                // Use that to access the affected item in mWordList.
-                String element = recyclerViewList[mPosition];
-
-                // Notify the adapter, that the data has changed so it can
-                // update the RecyclerView to display the data.
-                mAdapter.notifyDataSetChanged();
-            }
-        }
-
-        @NonNull
         @Override
         public WordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View mItemView = mInflater.inflate(R.layout.contact_info, parent, false);
-            return new WordViewHolder(mItemView, this);
+            View itemView = mInflater.inflate(R.layout.activity_contacts, parent, false);
+            return new WordViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(WordViewHolder holder, int position) {
-            String mCurrent = recyclerViewList[position];
-            holder.wordItemView.setText(mCurrent);
+            if (aList != null) {
+                String current = aList.get(position);
+                holder.wordItemView.setText(current);
+            } else {
+                // Covers the case of data not being ready yet.
+                holder.wordItemView.setText("No Contacts");
+            }
         }
 
         @Override
         public int getItemCount() {
-            return recyclerViewList.length;
+            if (aList != null) {
+                return aList.size();
+            } else {
+                return 0;
+
+            }
+        }
+
+
+        class WordViewHolder extends RecyclerView.ViewHolder {
+            private final TextView wordItemView;
+
+            private WordViewHolder(View itemView) {
+                super(itemView);
+                wordItemView = itemView.findViewById(R.id.ContactInfo);
+            }
         }
     }
 }
