@@ -2,6 +2,8 @@ package com.example.texttraq;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +14,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
     public Location myLocation = null;
     public Location nextLocation = new Location("");
+    private AlarmManager manager;
+    private PendingIntent pendingIntent;
 
 
     @Override
@@ -57,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(mapViewBundle);
         mapView.getMapAsync(this);
+
+
+
 
 
     }
@@ -241,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Button startButton2 = findViewById(R.id.startButton2);
         startButton2.setVisibility(View.INVISIBLE);
         startButton.setVisibility(View.VISIBLE);
+        cancelAlarm(view);
     }
 
     public void stop(View view) {
@@ -250,6 +259,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         startButton.setVisibility(View.VISIBLE);
         startButton2.setVisibility(View.INVISIBLE);
         startButton3.setVisibility(View.INVISIBLE);
+
+        cancelAlarm(view);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -269,12 +280,30 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //use google maps api instead to make a request using two lats and longs
         //thatll get you the ETA
 
+
         SmsManager smsManager = SmsManager.getDefault();
         getCurrLocation();
         String myLoc = getLocationName(myLocation.getLatitude(),myLocation.getLongitude());
-        String aMessage = "Hey this is a text message from your app you are currently in" + myLoc;
-        smsManager.sendTextMessage("2073176507",null,aMessage,null,null);
+        // Retrieve a PendingIntent that will perform a broadcast
+        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+        Bundle aBundle = new Bundle();
+        aBundle.putString("address",myLoc);
+        alarmIntent.putExtras(aBundle);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 
+        manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        int interval = 1000 * 5;
+
+        manager.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),interval,pendingIntent);
+        
+
+
+    }
+
+    public void cancelAlarm(View view) {
+        if (manager != null) {
+            manager.cancel(pendingIntent);
+        }
     }
 
 
