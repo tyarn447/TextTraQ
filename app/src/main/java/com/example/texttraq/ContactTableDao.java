@@ -1,5 +1,8 @@
 package com.example.texttraq;
 
+import java.util.List;
+
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -17,8 +20,12 @@ public interface ContactTableDao {
     @Update
     void updateUserSettings(ContactTable contactTable);
 
+    // Delete all?
+    @Query("DELETE FROM ContactTable")
+    void deleteAll();
+
     //PRE:table exists
     //POST:gets all contacts from contactTable
-    @Query("SELECT * FROM ContactTable")
-    public ContactTable[] getAllContacts();
+    @Query("SELECT * from ContactTable ORDER BY Name ASC")
+    LiveData<List<ContactTable>> getAllContacts();
 }

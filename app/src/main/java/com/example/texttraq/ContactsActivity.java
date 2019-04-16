@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +32,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-//import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.ColumnInfo;
@@ -54,7 +52,7 @@ public class ContactsActivity extends AppCompatActivity {
     public static String EXTRAMESSAGE = "Name";
     public static String EXTRAMESSAGE2 = "Number";
     //these two are for passing to intent that goes to contactsettings activity
-
+    private WordViewModel mWordViewModel;
     public List<String> aList = new ArrayList<String>();
     public String[] recyclerViewList;
 
@@ -86,23 +84,25 @@ public class ContactsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contacts);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        final WordListAdapter adapter = new WordListAdapter(this);
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
-        ContactTableDao contactTableDao = db.getContactDao();
-        final ContactTable users[] = contactTableDao.getAllContacts();
-
+        mWordViewModel = ViewModelProviders.of(this).get(WordViewModel.class);
+        mWordViewModel.getAllWords().observe(this, new Observer<List<ContactTable>>() {
+            @Override
+            public void onChanged(@Nullable final List<ContactTable> words) {
+                // Update the cached copy of the words in the adapter.
+                adapter.setWords(words);
+            }
+        });
+        /*
         for (int i = 0; i < users.length; i++) {
             String aString;
             aString = users[i].getName() + "," + users[i].getNumber();
             aList.add(aString);
         }
         recyclerViewList = aList.toArray(new String[aList.size()]);
-
-        final WordListAdapter adapter = new WordListAdapter(this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        */
     }
 
     public void goToContacts(View view) {
@@ -182,10 +182,63 @@ public class ContactsActivity extends AppCompatActivity {
         }
     }
 
+    public static class WordRepository {
+
+        private ContactTableDao mWordDao;
+        private LiveData<List<ContactTable>> mAllWords;
+
+        WordRepository(Application application) {
+            AppDataBase db = AppDataBase.getDatabase(application);
+            mWordDao = db.getContactDao();
+            mAllWords = mWordDao.getAllContacts();
+        }
+
+        LiveData<List<ContactTable>> getAllWords() {
+            return mAllWords;
+        }
+
+        public void insert(ContactTable contactTable) {
+            new insertAsyncTask(mWordDao).execute(contactTable);
+        }
+
+        private static class insertAsyncTask extends AsyncTask<ContactTable, Void, Void> {
+
+            private ContactTableDao mAsyncTaskDao;
+
+            insertAsyncTask(ContactTableDao dao) {
+                mAsyncTaskDao = dao;
+            }
+
+            @Override
+            protected Void doInBackground(final ContactTable... params) {
+                mAsyncTaskDao.insert(params[0]);
+                return null;
+            }
+        }
+    }
+
+    public class WordViewModel extends AndroidViewModel {
+
+        private WordRepository mRepository;
+
+        private LiveData<List<ContactTable>> mAllWords;
+
+        public WordViewModel (Application application) {
+            super(application);
+            mRepository = new WordRepository(application);
+            mAllWords = mRepository.getAllWords();
+        }
+
+        LiveData<List<ContactTable>> getAllWords() { return mAllWords; }
+
+        public void insert(ContactTable contactTable) { mRepository.insert(contactTable); }
+    }
+
+
     public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
 
         private final LayoutInflater mInflater;
-
+        private List<ContactTable> mWords; // Cached copy of words
 
         WordListAdapter(Context context) {
             mInflater = LayoutInflater.from(context);
@@ -193,39 +246,68 @@ public class ContactsActivity extends AppCompatActivity {
 
         @Override
         public WordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = mInflater.inflate(R.layout.activity_contacts, parent, false);
+            View itemView = mInflater.inflate(R.layout.contact_info, parent, false);
             return new WordViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(WordViewHolder holder, int position) {
-            if (aList != null) {
-                String current = aList.get(position);
-                holder.wordItemView.setText(current);
+            if (mWords != null) {
+                ContactTable current = mWords.get(position);
+                holder.wordItemView.setText(current.getName());
             } else {
                 // Covers the case of data not being ready yet.
-                holder.wordItemView.setText("No Contacts");
+                holder.wordItemView.setText("No Word");
             }
         }
 
+        void setWords(List<ContactTable> words) {
+            mWords = words;
+            notifyDataSetChanged();
+        }
+
+        // getItemCount() is called many times, and when it is first called,
+        // mWords has not been updated (means initially, it's null, and we can't return null).
         @Override
         public int getItemCount() {
-            if (aList != null) {
-                return aList.size();
-            } else {
-                return 0;
-
-            }
+            if (mWords != null)
+                return mWords.size();
+            else return 0;
         }
-
 
         class WordViewHolder extends RecyclerView.ViewHolder {
             private final TextView wordItemView;
 
             private WordViewHolder(View itemView) {
                 super(itemView);
-                wordItemView = itemView.findViewById(R.id.ContactInfo);
+                wordItemView = itemView.findViewById(R.id.textView);
             }
         }
     }
+
+
+    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
+
+        private final ContactTableDao mDao;
+        String[] words;
+
+        PopulateDbAsync(AppDataBase db) {
+            mDao = db.getContactDao();
+        }
+
+        @Override
+        protected Void doInBackground(final Void... params) {
+            // Start the app with a clean database every time.
+            // Not needed if you only populate the database
+            // when it is first created
+            mDao.deleteAll();
+
+            for (int i = 0; i <= words.length - 1; i++) {
+                ContactTable contactTable = new ContactTable(words[i]);
+                mDao.insert(contactTable);
+            }
+            return null;
+        }
+    }
+
 }
