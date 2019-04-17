@@ -42,6 +42,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/navigation"
+        android:onClick="goToMain"
         app:layout_constraintEnd_toStartOf="@+id/settingsButton"
         app:layout_constraintStart_toEndOf="@+id/contactsButton"
         app:layout_constraintTop_toTopOf="parent" />
@@ -52,6 +53,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/settings"
+        android:onClick="goToSettings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

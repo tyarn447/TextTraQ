@@ -3,7 +3,6 @@ package com.example.texttraq;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
 @Entity(primaryKeys = {"Name","Number"})
 public class ContactTable {
@@ -23,7 +22,7 @@ public class ContactTable {
 @ColumnInfo
     public String CustomMessage;
 
-    public ContactTable(){}
+    public ContactTable(String word){}
 
     public ContactTable(String pName, String pNumber, int pContactTime, Boolean pContactLocation, Boolean pContactSpeed, Boolean pContactETA, String pCustomMessage) {
         Name = pName;
