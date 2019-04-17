@@ -38,7 +38,7 @@ public class ContactSettingsActivity extends AppCompatActivity {
         Boolean ETA = aUser.getETA();
         //have all things now get views
 
-        TextView editMsg = (TextView)findViewById(R.id.editText);
+        TextView editMsg = (TextView)findViewById(R.id.custMessage);
         TextView editTime = (TextView)findViewById(R.id.timeText);
         Switch editLoc = (Switch)findViewById(R.id.locationSwitch);
         Switch editETA = (Switch)findViewById(R.id.ETASwitch);
@@ -47,7 +47,7 @@ public class ContactSettingsActivity extends AppCompatActivity {
 
         //set all views
         editMsg.setText(custMessage);
-        editTime.setText(timeBetween);
+        editTime.setText(Integer.toString(timeBetween));
         editLoc.setChecked(location);
         editSpeed.setChecked(speed);
         editETA.setChecked(ETA);

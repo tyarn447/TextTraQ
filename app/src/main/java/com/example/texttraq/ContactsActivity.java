@@ -16,8 +16,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,13 +83,12 @@ public class ContactsActivity extends AppCompatActivity {
      */
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
         ContactTableDao contactTableDao = db.getContactDao();
@@ -99,10 +101,31 @@ public class ContactsActivity extends AppCompatActivity {
         }
         recyclerViewList = aList.toArray(new String[aList.size()]);
 
-        final WordListAdapter adapter = new WordListAdapter(this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ArrayAdapter adapter = new ArrayAdapter<String>(this,R.layout.activity_listview,recyclerViewList);
+        final ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String nameNum = (String) listView.getItemAtPosition(position);
+                Log.d(LOG_TAG, nameNum);
+                String separated[] = nameNum.split(",");
+                String name = separated[0];
+                String num = separated[1];
+                sendNameNum(name,num);
+            }
+        });
 
+
+
+
+    }
+
+    public void sendNameNum(String name, String num){
+        Intent newIntent = new Intent(this,ContactSettingsActivity.class);
+        newIntent.putExtra(EXTRAMESSAGE,name);
+        newIntent.putExtra(EXTRAMESSAGE2,num);
+        startActivity(newIntent);
     }
 
     public void goToContacts(View view) {
@@ -167,64 +190,8 @@ public class ContactsActivity extends AppCompatActivity {
                             //Button aButton = (Button)findViewById(R.id.contactsButton);
 
                         }
-
-
-                        //example for alex
-                        //MUST ADD A USER TO DATABASE BEFOREHAND OR THIS WILL NOT WORK
-
-
-                        //example for alex end
-
-
                     }
                 }
-            }
-        }
-    }
-
-    public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
-
-        private final LayoutInflater mInflater;
-
-
-        WordListAdapter(Context context) {
-            mInflater = LayoutInflater.from(context);
-        }
-
-        @Override
-        public WordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = mInflater.inflate(R.layout.activity_contacts, parent, false);
-            return new WordViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(WordViewHolder holder, int position) {
-            if (aList != null) {
-                String current = aList.get(position);
-                holder.wordItemView.setText(current);
-            } else {
-                // Covers the case of data not being ready yet.
-                holder.wordItemView.setText("No Contacts");
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            if (aList != null) {
-                return aList.size();
-            } else {
-                return 0;
-
-            }
-        }
-
-
-        class WordViewHolder extends RecyclerView.ViewHolder {
-            private final TextView wordItemView;
-
-            private WordViewHolder(View itemView) {
-                super(itemView);
-                wordItemView = itemView.findViewById(R.id.ContactInfo);
             }
         }
     }
