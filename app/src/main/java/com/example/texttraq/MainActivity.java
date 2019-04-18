@@ -27,6 +27,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.w3c.dom.Text;
 
@@ -44,8 +45,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
     public Location myLocation = null;
     public Location nextLocation = new Location("");
+    public Location lastLocation = null;
     private AlarmManager manager;
     private PendingIntent pendingIntent;
+
 
 
     @Override
@@ -62,10 +65,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(mapViewBundle);
         mapView.getMapAsync(this);
-
-
-
-
 
     }
 
@@ -232,6 +231,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             TextView tv = (TextView)findViewById(R.id.textView2);
             nextLocation.setLatitude(address.getLatitude());
             nextLocation.setLongitude(address.getLongitude());
+            LatLng goToLocation = new LatLng(nextLocation.getLatitude(), nextLocation.getLongitude());
+            gmap.addMarker(new MarkerOptions().position(goToLocation).title("Destination"));
             tv.setText("If the map currently shows your desired destination and you would like to start your journey, please press the 'Start Journey' button, if it is not, please enter a more specific address.");
 
         }
