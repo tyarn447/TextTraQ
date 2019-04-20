@@ -12,7 +12,7 @@
         android:id="@+id/settingsTitle"
         android:layout_width="160dp"
         android:layout_height="67dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="@string/settings"
         android:textColor="@android:color/white"
@@ -113,15 +113,16 @@
         android:onClick="applySettings"
         android:text="@string/apply_settings"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/deleteButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/custMessage" />
+        app:layout_constraintTop_toBottomOf="@+id/custMessage"
+        app:layout_constraintVertical_bias="0.219" />
 
     <EditText
         android:id="@+id/custMessage"
         android:layout_width="319dp"
         android:layout_height="145dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="32dp"
         android:autofillHints=""
         android:background="@android:color/white"
         android:ems="10"
@@ -130,7 +131,6 @@
         android:inputType="textMultiLine"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.923"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ETASwitch" />
 
@@ -185,24 +185,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settingsTitle" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="135dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:text="Enter Custom Message"
-        android:textColor="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/custMessage"
-        app:layout_constraintEnd_toStartOf="@+id/ETASwitch"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/speedSwitch"
-        app:layout_constraintVertical_bias="1.0" />
+        android:layout_marginBottom="16dp"
+        android:text="Delete Contact"
+        android:onClick="onDeleteContact"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/applyChanges"
+        app:layout_constraintTop_toBottomOf="@+id/custMessage"
+        app:layout_constraintVertical_bias="0.24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
