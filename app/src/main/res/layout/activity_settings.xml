@@ -104,6 +104,8 @@
         android:id="@+id/applyChanges"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
@@ -112,6 +114,7 @@
         android:text="@string/apply_settings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/custMessage" />
 
     <EditText
@@ -119,6 +122,7 @@
         android:layout_width="319dp"
         android:layout_height="145dp"
         android:layout_marginTop="36dp"
+        android:layout_marginBottom="8dp"
         android:autofillHints=""
         android:background="@android:color/white"
         android:ems="10"
@@ -126,6 +130,7 @@
         android:hint="@string/enter_a_custom_message"
         android:inputType="textMultiLine"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.923"
         app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +138,7 @@
 
     <EditText
         android:id="@+id/timeText"
-        android:layout_width="113dp"
+        android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -197,9 +202,7 @@
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/custMessage"
         app:layout_constraintEnd_toStartOf="@+id/ETASwitch"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/speedSwitch"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/ETASwitch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
