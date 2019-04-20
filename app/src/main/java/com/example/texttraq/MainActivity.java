@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private PendingIntent pendingIntent;
     private LocationManager locationManager = null;
     public Integer tryInt = 0;
-    public AlarmReceiverTry helper = new AlarmReceiverTry();
     public Integer minutes = 0;
     AppDataBase db = null;
 
@@ -468,53 +467,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-
-
-    public class AlarmReceiverTry extends BroadcastReceiver {
-
-        //public Location myLocation = null;
-
-        @RequiresApi(api = Build.VERSION_CODES.M)
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d("HERE","HERE");
-            tryInt ++;
-            final Bundle extras = intent.getExtras();
-            String myLoc = (String) extras.get("address");
-            //Bundle b = intent.getExtras();
-            //String[] contacts =  b.getStringArray("allContacts");
-            //String myLoc = "";
-            MainActivity helper = new MainActivity();
-            //String contacts = (String) extras.get("contactNames");
-            ArrayList<String> contactNames = (ArrayList<String>) extras.getSerializable("contactNames");
-            ArrayList<Integer> timeBetween = (ArrayList<Integer>) extras.getSerializable("timeBetween");
-            ArrayList<Boolean> location = (ArrayList<Boolean>) extras.getSerializable("location");
-            SmsManager smsManager = SmsManager.getDefault();
-
-            //String contactNames[] = contacts.split("|");
-            for(String aString: contactNames){
-                Log.d("NAME",aString);
-            }
-            for(Integer aInt: timeBetween){
-                Log.d("TIME",aInt.toString());
-            }
-            for(Boolean aBool: location){
-                if(aBool){
-                    Log.d("BOOL","true");
-                }
-                else{
-                    Log.d("BOOL","false");
-                }
-            }
-            Log.d("TRY","This is try int" + tryInt.toString());
-
-
-            String aMessage = "Hey this is a text message from your app you are currently in" + myLoc;
-            smsManager.sendTextMessage("2073176507", null, aMessage, null, null);
-
-        }
-
-    }
 
 }
 
