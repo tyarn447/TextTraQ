@@ -20,12 +20,8 @@ public interface ContactTableDao {
     @Update
     void updateUserSettings(ContactTable contactTable);
 
-    // Delete all?
-    @Query("DELETE FROM ContactTable")
-    void deleteAll();
-
     //PRE:table exists
     //POST:gets all contacts from contactTable
     @Query("SELECT * from ContactTable ORDER BY Name ASC")
-    LiveData<List<ContactTable>> getAllContacts();
+    ContactTable[] getAllContacts();
 }

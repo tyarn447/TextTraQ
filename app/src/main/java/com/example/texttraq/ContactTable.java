@@ -22,7 +22,7 @@ public class ContactTable {
 @ColumnInfo
     public String CustomMessage;
 
-    public ContactTable(String word){}
+    public ContactTable(){}
 
     public ContactTable(String pName, String pNumber, int pContactTime, Boolean pContactLocation, Boolean pContactSpeed, Boolean pContactETA, String pCustomMessage) {
         Name = pName;
