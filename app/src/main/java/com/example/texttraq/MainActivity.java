@@ -2,6 +2,7 @@ package com.example.texttraq;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -34,6 +35,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void run() {
+            callDeleteCache();
             getCurrLocation();
             SmsManager smsManager = SmsManager.getDefault();
             String aMessage = null;
@@ -186,6 +189,40 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mListener);
 
+    }
+
+    //PRE:none
+    //POST:only here because cant use this as context outside of this class
+    public void callDeleteCache(){
+        deleteCache(this);
+    }
+
+    //PRE:needs context of app
+    //POST:deletes cache for this app, this is so it can update its location
+    public static void deleteCache(Context context) {
+        try {
+            File dir = context.getCacheDir();
+            deleteDir(dir);
+        } catch (Exception e) { e.printStackTrace();}
+    }
+
+    //PRE:none
+    //POST:deletes cache directory recursively.
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+            return dir.delete();
+        } else if(dir!= null && dir.isFile()) {
+            return dir.delete();
+        } else {
+            return false;
+        }
     }
 
 
@@ -418,46 +455,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //use google maps api instead to make a request using two lats and longs
         //thatll get you the ETA
-
-
         getCurrLocation();
-        String myLoc = getLocationName(myLocation.getLatitude(),myLocation.getLongitude());
-        Log.d("MYLOC", myLoc);
-        // Retrieve a PendingIntent that will perform a broadcast
-        Intent alarmIntent = new Intent(this, AlarmReceiverTry.class);
-        //String[] userNames = contactTableDao.getContactNames();
-        List<String> contactNames = contactTableDao.getContactNames();
-        List<Integer> timeBetween = contactTableDao.getContactTimeBetween();
-        List<Boolean> location = contactTableDao.getContactLocation();
-
-        //contactNames = Arrays.asList(userNames);
-
-        //String contactNames = "";
-        //for(String aString: userNames){
-          //  Log.d("NAME",aString);
-            //contactNames = contactNames + aString + "|";
-            //Log.d("NAMES",contactNames);
-        //}
-
-        ContactTable contacts[] = contactTableDao.getAllContacts();
-
-        //alarmIntent.putExtra("contactNames",contactNames);
-        alarmIntent.putExtra("location",(Serializable)location);
-        alarmIntent.putExtra("timeBetween",(Serializable)timeBetween);
-        alarmIntent.putExtra("contactNames", (Serializable) contactNames);
-        alarmIntent.putExtra("address",myLoc);
-
-        REQUESTCODE ++;
-
-        pendingIntent = PendingIntent.getBroadcast(this, REQUESTCODE, alarmIntent, 0);
-
-        manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        int interval = 1000 * 5;
-
-        manager.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),interval,pendingIntent);
-
-
-
     }
 
     public void cancelRunnable(View view) {
