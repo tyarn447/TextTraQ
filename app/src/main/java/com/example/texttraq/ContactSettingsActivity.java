@@ -71,6 +71,18 @@ public class ContactSettingsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    public void onDeleteContact(View view){
+        AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
+        ContactTableDao contactTableDao = db.getContactDao();
+        contactTableDao.deleteContact(name,number);
+        Intent intent = new Intent(this,ContactsActivity.class);
+        startActivity(intent);
+        finish();
+
+    }
+
+
     //PRE:this page exists
     //POST:applys the current settings on the screen to the database
     public void applySettings(View view){
@@ -104,4 +116,6 @@ public class ContactSettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ContactSettingsActivity.class);
         startActivity(intent);
     }
+
+
 }
