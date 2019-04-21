@@ -1,5 +1,4 @@
 package com.example.texttraq;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -12,10 +11,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
@@ -32,6 +29,24 @@ public class ContactsActivity extends AppCompatActivity {
 
 
 
+    /* Notes For Alex From Taylor
+    First on the recycler view make sure each button shows the name and number so we have a way of getting
+    both the name and number from the button,
+    Then when you are able to click each one individual you want to add both the name and number into the intent,
+    ie. you want to add the Name of the person into the EXTRAMESSAGE i have defined above, and you want to add the
+    Number of the person into the EXTRAMESSAGE2 I have defined above as well, once those are both added into the intent
+    you pass the intent along to the contactSettings activity, I have created the contact settings activity so that it will
+    take both those extramessages you have passed along and make the page header have the persons name and so giving
+    the page the name and number is crucial because it allows me to grab their info from the database so that we can
+    initialze the page with it so it looks correct, also allows me to update their settings after when the apply button is pressed,
+    that page is essentially finished just need to get the recycler view and pressing each one working... think you need
+    to do something with an onclicklistener for this.
+
+    AppDataBase db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
+    ContactTableDao contactTableDao = db.getContactDao();
+
+
+     */
 
 
 
@@ -65,8 +80,11 @@ public class ContactsActivity extends AppCompatActivity {
                 String num = separated[1];
                 sendNameNum(name,num);
             }
-
         });
+
+
+
+
     }
 
     public void sendNameNum(String name, String num){
@@ -74,7 +92,6 @@ public class ContactsActivity extends AppCompatActivity {
         newIntent.putExtra(EXTRAMESSAGE,name);
         newIntent.putExtra(EXTRAMESSAGE2,num);
         startActivity(newIntent);
-        finish();
     }
 
     public void goToContacts(View view) {
@@ -143,7 +160,5 @@ public class ContactsActivity extends AppCompatActivity {
                 }
             }
         }
-        finish();
-        startActivity(getIntent());
     }
 }
