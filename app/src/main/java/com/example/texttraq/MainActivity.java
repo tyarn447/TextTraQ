@@ -460,6 +460,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void cancelRunnable(View view) {
         handler.removeCallbacks(runnable);
+        minutes = 0;
         if (manager != null) {
             manager.cancel(pendingIntent);
         }
