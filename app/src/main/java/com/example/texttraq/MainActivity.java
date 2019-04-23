@@ -253,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //else does nothing
     public void checkFirstRun() {
         boolean notFirstRun = false;
+        db = Room.databaseBuilder(this, AppDataBase.class, "db-data").allowMainThreadQueries().build();
 
         SharedPreferences settings = getSharedPreferences("PREFS_NAME", 0);
         notFirstRun = settings.getBoolean("FIRST_RUN", false);
@@ -461,9 +462,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void cancelRunnable(View view) {
         handler.removeCallbacks(runnable);
         minutes = 0;
-        if (manager != null) {
-            manager.cancel(pendingIntent);
-        }
     }
 
 

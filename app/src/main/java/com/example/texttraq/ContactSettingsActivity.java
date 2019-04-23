@@ -59,16 +59,19 @@ public class ContactSettingsActivity extends AppCompatActivity {
     public void goToContacts(View view) {
         Intent intent = new Intent(this, ContactsActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void goToMain(View view) {
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void goToSettings(View view) {
         Intent intent = new Intent(this, settingsActivity.class);
         startActivity(intent);
+        finish();
     }
 
 
