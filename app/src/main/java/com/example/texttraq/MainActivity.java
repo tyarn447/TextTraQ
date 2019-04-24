@@ -15,6 +15,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,7 +33,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.File;
@@ -61,6 +66,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public Integer minutes = 0;
     AppDataBase db = null;
 
+    private static String url;
+    private String TAG = MainActivity.class.getSimpleName();
+    public String eta;
+
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
         @TargetApi(Build.VERSION_CODES.M)
@@ -87,15 +96,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     //ASSERT:this is a minute where we want to text that contact
                     if (aContact.getLocation()) {
                         //ASSERT:we want to send Location for this contact
-                        custMsg = custMsg + "LocationTrue";
+                        try {
+                            custMsg = custMsg + " Location: " + getLocationName(myLocation.getLatitude(),myLocation.getLongitude());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     if (aContact.getSpeed()) {
                         //ASSERT:we want to send speed for this contact
-                        custMsg = custMsg + "SpeedTrue";
+                        custMsg = custMsg + " SpeedTrue";
                     }
                     if (aContact.getETA()) {
                         //ASSERT: we want to send ETA for this contact
-                        custMsg = custMsg + "ETATrue";
+                        custMsg = custMsg + " ETA: " + eta;
                     }
                     smsManager.sendTextMessage(number, null, custMsg, null, null);
                 }
@@ -103,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
             try {
-                aMessage = "Hey this is a text message from your app you are currently in" + getLocationName(myLocation.getLatitude(),myLocation.getLongitude());
+                aMessage = "Hey this is a text message from your app you are currently in" + getLocationName(myLocation.getLatitude(),myLocation.getLongitude()) + " " + eta;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -194,7 +207,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //PRE:none
     //POST:only here because cant use this as context outside of this class
     public void callDeleteCache(){
+
         deleteCache(this);
+        if(nextLocation != null) {
+            new GetEta().execute();
+        }
     }
 
     //PRE:needs context of app
@@ -204,6 +221,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             File dir = context.getCacheDir();
             deleteDir(dir);
         } catch (Exception e) { e.printStackTrace();}
+
+
     }
 
     //PRE:none
@@ -401,8 +420,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             nextLocation.setLatitude(address.getLatitude());
             nextLocation.setLongitude(address.getLongitude());
             tv.setText("If the map currently shows your desired destination and you would like to start your journey, please press the 'Start Journey' button, if it is not, please enter a more specific address.");
-
+            gmap.clear();
+            gmap.addMarker(new MarkerOptions().position(latLng).title("Destination"));
         }
+
     }
 
 
@@ -457,12 +478,70 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //use google maps api instead to make a request using two lats and longs
         //thatll get you the ETA
         getCurrLocation();
+
+        new GetEta().execute();
+
+
     }
 
     public void cancelRunnable(View view) {
         handler.removeCallbacks(runnable);
         minutes = 0;
     }
+
+
+
+
+
+
+    //Alex Code
+    private class GetEta extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
+            url += myLocation.getLatitude();
+            url += ",";
+            url += myLocation.getLongitude();
+            url += "&destinations=";
+            url += nextLocation.getLatitude();
+            url += ",";
+            url += nextLocation.getLongitude();
+            url += "&key=AIzaSyDwJG7PNHMH7-Qu7HJzRrkU1-9zJat2XMw";
+
+            HttpHandler sh = new HttpHandler();
+
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall(url);
+
+            Log.e(TAG, "Response from url: " + jsonStr);
+
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    // Getting JSON Array node
+                    JSONArray rows = jsonObj.getJSONArray("rows");
+
+                    JSONObject c = rows.getJSONObject(0);
+
+                    JSONArray elements = c.getJSONArray("elements");
+                    JSONObject v = elements.getJSONObject(0);
+                    JSONObject duration = v.getJSONObject("duration");
+                    eta = duration.getString("text");
+                    Log.e("TAG", "Value: " + eta);
+
+                } catch (final JSONException e) {
+                    Log.e(TAG, "Json parsing error: " + e.getMessage());
+                }
+            } else {
+                Log.e(TAG, "Couldn't get json from server.");
+            }
+
+            return null;
+        }
+
+    }
+
 
 
 }
